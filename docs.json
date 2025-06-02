@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "ethancls",
+  "name": "fs0ciety",
   "colors": {
     "primary": "#ff5e00",
     "light": "#ffae00",
@@ -35,21 +35,21 @@
         ]
       },
       {
-        "tab": "API v1",
+        "tab": "Documentation API",
         "groups": [
           {
             "group": "API - Documentation",
             "pages": [
-              "api/introduction"
+              "api-reference/introduction"
             ]
           },
           {
             "group": "Routes",
             "pages": [
-              "api/endpoint/get",
-              "api/endpoint/create",
-              "api/endpoint/delete",
-              "api/endpoint/webhook"
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete",
+              "api-reference/endpoint/webhook"
             ]
           }
         ]
@@ -67,15 +67,9 @@
   "navbar": {
     "primary": {
       "type": "button",
-      "label": "Accueil",
-      "href": "https://docs.fs0ciety.uk"
-    },
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:contact@fs0ciety.uk"
-      }
-    ]
+      "label": "Contact",
+      "href": "mailto:contact@fs0ciety.uk"
+    }
   },
   "footer": {
     "socials": {
