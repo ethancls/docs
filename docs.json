@@ -61,21 +61,21 @@
     }
   },
   "logo": {
-    "light": "/logo/dark.png",
+    "light": "/logo/light.png",
     "dark": "/logo/dark.png"
   },
   "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Accueil",
+      "href": "https://docs.fs0ciety.uk"
+    },
     "links": [
       {
         "label": "Support",
         "href": "mailto:contact@fs0ciety.uk"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Acceuil",
-      "href": "https://docs.fs0ciety.uk"
-    }
+    ]
   },
   "footer": {
     "socials": {
