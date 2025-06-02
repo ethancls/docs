@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "ethancls",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#ff5e00",
+    "light": "#ffae00",
+    "dark": "#f74e05"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -14,7 +14,7 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Bien débuter !",
             "pages": [
               "introduction",
               "quickstart",
@@ -22,7 +22,7 @@
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Essentiels",
             "pages": [
               "essentials/markdown",
               "essentials/code",
@@ -35,21 +35,21 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "API v1",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "API - Documentation",
             "pages": [
-              "api-reference/introduction"
+              "api/introduction"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Routes",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api/endpoint/get",
+              "api/endpoint/create",
+              "api/endpoint/delete",
+              "api/endpoint/webhook"
             ]
           }
         ]
@@ -57,46 +57,28 @@
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/dark.png",
+    "dark": "/logo/dark.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:contact@fs0ciety.uk"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Acceuil",
+      "href": "https://docs.fs0ciety.uk"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
     }
   }
 }
