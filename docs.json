@@ -1,13 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "fs0ciety",
+  "name": "Documentation - fs0ciety",
   "colors": {
     "primary": "#ff5e00",
     "light": "#ffae00",
     "dark": "#f74e05"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
@@ -17,19 +17,19 @@
             "group": "Bien débuter !",
             "pages": [
               "introduction",
-              "quickstart",
-              "development"
+              "indications",
+              "developpement"
             ]
           },
           {
-            "group": "Essentiels",
+            "group": "Les essentiels",
             "pages": [
               "essentials/markdown",
               "essentials/code",
               "essentials/images",
-              "essentials/settings",
+              "essentials/reglages",
               "essentials/navigation",
-              "essentials/reusable-snippets"
+              "essentials/snippets"
             ]
           }
         ]
@@ -38,7 +38,7 @@
         "tab": "Documentation API",
         "groups": [
           {
-            "group": "API - Documentation",
+          "group": "Documentation API",
             "pages": [
               "api-reference/introduction"
             ]
