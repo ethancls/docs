@@ -6,7 +6,7 @@
   "colors": {
     "primary": "#dc2626",
     "light": "#ef4444",
-    "dark": "#1f2937"
+    "dark": "#000000"
   },
   "favicon": "/favicon.svg",
   "background": {
@@ -20,8 +20,8 @@
     "strict": false
   },
   "banner": {
-    "content": "Bienvenue sur FS0CIETY !",
-    "dismissible": true
+    "content": "🚧 Site toujours en développement ! [N'hésitez pas à nous contacter pour toute question ou suggestion](mailto:contact@fs0ciety.uk)",
+    "dismissible": false
   },
   "contextual": {"options": ["copy", "view", "chatgpt", "claude"]},
   "search": {
@@ -48,12 +48,7 @@
           {
             "group": "Les essentiels",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reglages",
-              "essentials/navigation",
-              "essentials/snippets"
+              "essentiels/cheatsheet"
             ]
           }
         ]
