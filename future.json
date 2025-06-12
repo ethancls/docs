@@ -1,0 +1,93 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "FS0CIETY",
+  "description": "FS0CIETY est une plateforme communautaire pour partager des connaissances et des ressources sur la cybersécurité, le hacking et la technologie. Elle offre un espace aux passionnés pour apprendre, collaborer et développer leurs compétences dans un environnement bienveillant.",
+  "colors": {
+    "primary": "#dc2626",
+    "light": "#ef4444",
+    "dark": "#000000"
+  },
+  "favicon": "/favicon.svg",
+  "background": {
+    "decoration": "grid"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "banner": {
+    "content": "🚧 Site toujours en développement ! [N'hésitez pas à nous contacter pour toute question ou suggestion](mailto:contact@fs0ciety.uk)",
+    "dismissible": false
+  },
+  "contextual": { "options": ["view", "chatgpt", "claude"] },
+  "search": {
+    "prompt": "Recherche"
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Community",
+          "icon": "house",
+          "href": "https://slack.com"
+        },
+        {
+          "anchor": "Blog",
+          "icon": "pencil",
+          "href": "https://mintlify.com/blog"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "language": "fr",
+        "groups": [
+          {
+            "group": "Commencer",
+            "pages": ["index", "fr/introduction", "fr/indications", "fr/developpement"]
+          }
+        ]
+      },
+      {
+        "language": "en",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["index", "en/introduction", "en/indications", "en/developpement"]
+          }
+        ]
+      },
+      {
+        "language": "ru",
+        "groups": [
+          {
+            "group": "Начало работы",
+            "pages": ["index", "ru/introduction", "ru/indications", "ru/developpement"]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Contact",
+      "href": "mailto:contact@fs0ciety.uk"
+    }
+  },
+  "footer": {
+    "socials": {
+      "website": "https://fs0ciety.uk",
+      "github": "https://github.com/ethancls/docs"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": true
+    }
+  }
+}

@@ -1,0 +1,389 @@
+---
+title: 'MacOS'
+description: 'Guide complet pour configurer votre environnement de cybersécurité sur macOS avec Homebrew et les outils essentiels'
+icon: "apple"
+---
+
+## Configuration de l'environnement macOS
+
+Ce guide vous accompagne dans l'installation et la configuration des outils essentiels pour la cybersécurité et le pentesting sur macOS.
+
+<Info>
+macOS offre un excellent environnement Unix-like pour les professionnels de la cybersécurité, avec un accès natif aux outils en ligne de commande et une compatibilité étendue avec les outils open source.
+</Info>
+
+## Prérequis système
+
+<Steps>
+<Step title="Vérifier la version macOS">
+  Assurez-vous d'avoir macOS 12.0 (Monterey) ou plus récent pour une compatibilité optimale.
+  
+  ```bash
+  sw_vers -productVersion
+  ```
+  
+  <Check>
+  Version recommandée : macOS 13.0+ (Ventura) ou macOS 14.0+ (Sonoma)
+  </Check>
+</Step>
+
+<Step title="Installer Xcode Command Line Tools">
+  Les outils de développement Apple sont requis pour compiler de nombreux outils.
+  
+  ```bash
+  xcode-select --install
+  ```
+  
+  <Note>
+  Cette installation peut prendre 10-15 minutes selon votre connexion internet.
+  </Note>
+</Step>
+</Steps>
+
+## Installation d'Homebrew
+
+Homebrew est le gestionnaire de paquets incontournable pour macOS.
+
+<Steps>
+<Step title="Installer Homebrew">
+  ```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  ```
+  
+  <Warning>
+  Ne jamais exécuter de scripts depuis internet sans les vérifier. Ce script est officiel et sécurisé.
+  </Warning>
+</Step>
+
+<Step title="Configurer le PATH">
+  Ajoutez Homebrew à votre PATH selon votre shell :
+  
+  <Tabs>
+  <Tab title="zsh (par défaut)">
+    ```bash
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+    source ~/.zshrc
+    ```
+  </Tab>
+  
+  <Tab title="bash">
+    ```bash
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+    source ~/.bash_profile
+    ```
+  </Tab>
+  </Tabs>
+</Step>
+
+<Step title="Vérifier l'installation">
+  ```bash
+  brew --version
+  brew doctor
+  ```
+  
+  <Check>
+  Homebrew devrait afficher sa version et "Your system is ready to brew."
+  </Check>
+</Step>
+</Steps>
+
+## Outils de réseau et reconnaissance
+
+<Steps>
+<Step title="Nmap - Scanner de ports">
+  ```bash
+  brew install nmap
+  ```
+  
+  Test de fonctionnement :
+  ```bash
+  nmap -V
+  nmap -sn 192.168.1.0/24
+  ```
+</Step>
+
+<Step title="Masscan - Scanner haute vitesse">
+  ```bash
+  brew install masscan
+  ```
+</Step>
+
+<Step title="Gobuster - Découverte de répertoires">
+  ```bash
+  brew install gobuster
+  ```
+</Step>
+
+<Step title="FFuf - Web fuzzer moderne">
+  ```bash
+  brew install ffuf
+  ```
+</Step>
+</Steps>
+
+## Outils d'analyse et débogage
+
+<Steps>
+<Step title="Wireshark - Analyseur de paquets">
+  ```bash
+  brew install --cask wireshark
+  ```
+  
+  <Note>
+  L'installation GUI nécessite des permissions administrateur pour l'accès aux interfaces réseau.
+  </Note>
+</Step>
+
+<Step title="Netcat - Couteau suisse réseau">
+  ```bash
+  brew install netcat
+  ```
+</Step>
+
+<Step title="Tcpdump - Capture de paquets">
+  ```bash
+  # Déjà inclus dans macOS, mise à jour via Homebrew
+  brew install tcpdump
+  ```
+</Step>
+
+<Step title="Burp Suite Community">
+  ```bash
+  brew install --cask burp-suite
+  ```
+</Step>
+</Steps>
+
+## Outils de développement et scripts
+
+<Steps>
+<Step title="Python et outils associés">
+  ```bash
+  brew install python@3.11
+  pip3 install --upgrade pip
+  pip3 install requests beautifulsoup4 paramiko scapy
+  ```
+</Step>
+
+<Step title="Node.js et npm">
+  ```bash
+  brew install node
+  npm install -g npm@latest
+  ```
+</Step>
+
+<Step title="Git - Contrôle de version">
+  ```bash
+  brew install git
+  git config --global user.name "Votre Nom"
+  git config --global user.email "votre@email.com"
+  ```
+</Step>
+
+<Step title="Curl et Wget">
+  ```bash
+  brew install curl wget
+  ```
+</Step>
+</Steps>
+
+## Terminal et productivité
+
+<Steps>
+<Step title="iTerm2 - Terminal amélioré">
+  ```bash
+  brew install --cask iterm2
+  ```
+  
+  <Tip>
+  iTerm2 offre des fonctionnalités avancées comme les onglets, la division d'écran, et les profils personnalisés.
+  </Tip>
+</Step>
+
+<Step title="Oh My Zsh - Framework Zsh">
+  ```bash
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  ```
+</Step>
+
+<Step title="Tmux - Multiplexeur de terminal">
+  ```bash
+  brew install tmux
+  ```
+</Step>
+</Steps>
+
+## Machines virtuelles et conteneurs
+
+<Steps>
+<Step title="Docker Desktop">
+  ```bash
+  brew install --cask docker
+  ```
+  
+  <Warning>
+  Docker Desktop nécessite une licence payante pour un usage commercial. Vérifiez les conditions d'utilisation.
+  </Warning>
+</Step>
+
+<Step title="VirtualBox">
+  ```bash
+  brew install --cask virtualbox
+  ```
+  
+  <Note>
+  Vous devrez peut-être autoriser l'extension système Oracle dans les Préférences Système > Sécurité et confidentialité.
+  </Note>
+</Step>
+
+<Step title="UTM - Virtualisation native Apple Silicon">
+  ```bash
+  brew install --cask utm
+  ```
+  
+  <Tip>
+  UTM est particulièrement recommandé pour les Mac avec processeur Apple Silicon (M1/M2/M3).
+  </Tip>
+</Step>
+</Steps>
+
+## Configuration de Kali Linux
+
+<AccordionGroup>
+<Accordion title="UTM (recommandé pour Apple Silicon)">
+  1. Téléchargez l'image Kali ARM64 depuis [kali.org](https://www.kali.org/get-kali/#kali-virtual-machines)
+  2. Créez une nouvelle VM dans UTM
+  3. Allouez au minimum 4GB RAM et 50GB stockage
+  4. Suivez l'assistant d'installation Kali
+</Accordion>
+
+<Accordion title="VirtualBox (processeurs Intel)">
+  1. Téléchargez l'image VirtualBox depuis [kali.org](https://www.kali.org/get-kali/#kali-virtual-machines)
+  2. Importez l'appliance dans VirtualBox
+  3. Configurez les ressources selon vos besoins
+  4. Activez la virtualisation VT-x/AMD-V dans le BIOS si nécessaire
+</Accordion>
+
+<Accordion title="Docker (pour tests rapides)">
+  ```bash
+  docker pull kalilinux/kali-rolling
+  docker run -it --rm kalilinux/kali-rolling /bin/bash
+  
+  # Dans le conteneur :
+  apt update && apt install -y kali-tools-top10
+  ```
+</Accordion>
+</AccordionGroup>
+
+## Outils spécialisés cybersécurité
+
+<Steps>
+<Step title="John the Ripper - Craquage de mots de passe">
+  ```bash
+  brew install john-jumbo
+  ```
+</Step>
+
+<Step title="Hashcat - Craquage GPU">
+  ```bash
+  brew install hashcat
+  ```
+</Step>
+
+<Step title="Aircrack-ng - Audit WiFi">
+  ```bash
+  brew install aircrack-ng
+  ```
+  
+  <Warning>
+  L'audit WiFi nécessite une interface compatible et des autorisations légales appropriées.
+  </Warning>
+</Step>
+
+<Step title="Metasploit Framework">
+  ```bash
+  brew install metasploit
+  ```
+</Step>
+</Steps>
+
+## Configuration finale et bonnes pratiques
+
+<Steps>
+<Step title="Créer un dossier de travail">
+  ```bash
+  mkdir -p ~/Security/{tools,wordlists,scripts,results}
+  cd ~/Security
+  ```
+</Step>
+
+<Step title="Télécharger des wordlists">
+  ```bash
+  cd ~/Security/wordlists
+  curl -L -o rockyou.txt.gz https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt
+  curl -L -o SecLists.zip https://github.com/danielmiessler/SecLists/archive/master.zip
+  unzip SecLists.zip
+  ```
+</Step>
+
+<Step title="Alias utiles">
+  Ajoutez ces alias à votre `~/.zshrc` :
+  
+  ```bash
+  # Alias cybersécurité
+  alias ll='ls -la'
+  alias nmap-quick='nmap -sC -sV -O'
+  alias nmap-full='nmap -sC -sV -O -p-'
+  alias burp='java -jar -Xmx2G /Applications/Burp\ Suite\ Community\ Edition.app/Contents/java/app/burpsuite_community.jar'
+  
+  # Fonctions utiles
+  function portscan() { nmap -sC -sV -p- "$1" -oN "portscan_$1.txt"; }
+  function dirsearch() { gobuster dir -u "$1" -w ~/Security/wordlists/common.txt; }
+  ```
+</Step>
+</Steps>
+
+## Vérification de l'installation
+
+<Steps>
+<Step title="Test des outils principaux">
+  ```bash
+  # Test de base
+  nmap --version
+  python3 --version
+  git --version
+  
+  # Test fonctionnel
+  nmap -sn 127.0.0.1
+  python3 -c "import requests; print('Python OK')"
+  ```
+  
+  <Check>
+  Tous les outils devraient répondre avec leur version sans erreur.
+  </Check>
+</Step>
+
+<Step title="Mise à jour automatique">
+  Configurez la mise à jour automatique :
+  
+  ```bash
+  # Ajoutez à votre crontab (crontab -e)
+  0 2 * * 0 /opt/homebrew/bin/brew update && /opt/homebrew/bin/brew upgrade
+  ```
+</Step>
+</Steps>
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Cheat Sheet" icon="list" href="/essentiels/cheatsheet">
+    Découvrez les commandes essentielles pour utiliser vos nouveaux outils
+  </Card>
+  <Card title="Guide Linux" icon="penguin" href="/os/linux">
+    Configurez également un environnement Linux pour vos tests
+  </Card>
+</CardGroup>
+
+<Warning>
+**Rappel important** : Tous ces outils doivent être utilisés uniquement sur vos propres systèmes ou avec une autorisation explicite. L'utilisation non autorisée est illégale et peut avoir des conséquences juridiques graves.
+</Warning>

@@ -15,22 +15,13 @@
   "icons": {
     "library": "fontawesome"
   },
-  "appearance": {
-    "default": "system",
-    "strict": false
-  },
   "banner": {
     "content": "🚧 Site toujours en développement ! [N'hésitez pas à nous contacter pour toute question ou suggestion](mailto:contact@fs0ciety.uk)",
     "dismissible": false
   },
-  "contextual": {"options": ["copy", "view", "chatgpt", "claude"]},
+  "contextual": { "options": ["view", "chatgpt", "claude"] },
   "search": {
     "prompt": "Recherche"
-  },
-
-  "seo": {
-    "indexing": "all",
-    "metatags": {"title": "FS0CIETY - Documentation", "description": "FS0CIETY est une plateforme communautaire pour partager des connaissances et des ressources sur la cybersécurité, le hacking et la technologie."}
   },
   "navigation": {
     "tabs": [
@@ -38,44 +29,37 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Bien débuter !",
-            "pages": [
-              "introduction",
-              "indications",
-              "developpement"
-            ]
+            "group": "Présentation",
+            "pages": ["index"]
+          },
+          {
+            "group": "Commencer",
+            "pages": ["introduction", "indications", "developpement"]
           },
           {
             "group": "Les essentiels",
-            "pages": [
-              "essentiels/cheatsheet"
-            ]
+            "pages": ["essentiels/cheatsheet"]
           }
         ]
       },
       {
-        "tab": "Documentation API",
+        "tab": "OS",
         "groups": [
           {
-            "group": "Documentation API",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Routes",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "Configurations",
+            "pages": ["os/macos", "os/linux", "os/windows"]
           }
         ]
       }
     ],
     "global": {
-      "anchors": []
+      "anchors": [
+        {
+          "anchor": "Github",
+          "icon": "github",
+          "href": "https://github.com/ethancls/docs"
+        }
+      ]
     }
   },
   "logo": {
@@ -87,18 +71,12 @@
       "type": "button",
       "label": "Contact",
       "href": "mailto:contact@fs0ciety.uk"
-    },
-    "links": [
-      {
-        "label": "GitHub",
-        "href": "https://github.com/ethancls"
-      }
-    ]
+    }
   },
   "footer": {
     "socials": {
       "website": "https://fs0ciety.uk",
-      "github": "https://github.com/ethancls"
+      "github": "https://github.com/ethancls/docs"
     }
   },
   "errors": {

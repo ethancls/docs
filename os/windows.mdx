@@ -1,0 +1,582 @@
+---
+title: 'Windows'
+description: 'Guide complet pour configurer un environnement de cybersécurité sur Windows avec WSL2, Kali Linux et les outils essentiels'
+icon: "windows"
+---
+
+## Configuration de l'environnement Windows
+
+Windows peut devenir un excellent environnement pour la cybersécurité grâce à WSL (Windows Subsystem for Linux), qui permet d'exécuter un véritable environnement Linux nativement.
+
+<Info>
+WSL2 offre les meilleures performances et la compatibilité la plus étendue. Ce guide se concentre sur l'installation de Kali Linux via WSL2 pour un environnement professionnel.
+</Info>
+
+## Prérequis système
+
+<Steps>
+<Step title="Vérifier la version Windows">
+  WSL2 nécessite :
+  - **Windows 10** version 1903+ (build 18362+) ou **Windows 11**
+  - Architecture x64 ou ARM64
+  
+  ```powershell
+  # Vérifier la version dans PowerShell
+  winver
+  # ou
+  systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+  ```
+  
+  <Check>
+  Versions recommandées : Windows 10 22H2 ou Windows 11 22H2+
+  </Check>
+</Step>
+
+<Step title="Activer les fonctionnalités Windows">
+  Ouvrez PowerShell en tant qu'Administrateur et exécutez :
+  
+  ```powershell
+  # Activer WSL et la plateforme de machine virtuelle
+  dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+  dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+  
+  # Redémarrer le système
+  shutdown /r /t 0
+  ```
+  
+  <Warning>
+  Un redémarrage est obligatoire avant de continuer.
+  </Warning>
+</Step>
+
+<Step title="Mettre à jour le package WSL">
+  Après redémarrage, dans PowerShell Administrateur :
+  
+  ```powershell
+  wsl --update
+  wsl --set-default-version 2
+  ```
+</Step>
+</Steps>
+
+## Installation de Kali Linux WSL
+
+<Steps>
+<Step title="Installation via Microsoft Store">
+  **Méthode recommandée :**
+  1. Ouvrir Microsoft Store
+  2. Rechercher "Kali Linux"
+  3. Cliquer sur "Installer"
+  
+  **Ou via PowerShell :**
+  ```powershell
+  wsl --install -d kali-linux
+  ```
+</Step>
+
+<Step title="Configuration initiale de Kali">
+  Au premier lancement de Kali Linux :
+  
+  ```bash
+  # Créer un utilisateur (remplacer 'username' par votre nom)
+  # Entrer un mot de passe sécurisé
+  
+  # Mise à jour du système
+  sudo apt update && sudo apt full-upgrade -y
+  
+  # Installation des outils de base Kali
+  sudo apt install -y kali-tools-top10
+  ```
+  
+  <Tip>
+  Pour une installation complète des outils Kali (prend plus d'espace) :
+  `sudo apt install -y kali-linux-large`
+  </Tip>
+</Step>
+
+<Step title="Vérifier l'installation WSL">
+  Dans PowerShell :
+  
+  ```powershell
+  wsl --list --verbose
+  ```
+  
+  <Check>
+  Kali-linux devrait apparaître avec la version 2 et l'état "Running"
+  </Check>
+</Step>
+</Steps>
+
+## Configuration avancée WSL
+
+<Steps>
+<Step title="Optimisation des ressources">
+  Créez le fichier `.wslconfig` dans votre dossier utilisateur Windows :
+  
+  ```ini
+  # %USERPROFILE%\.wslconfig
+  [wsl2]
+  memory=8GB
+  processors=4
+  swap=2GB
+  localhostForwarding=true
+  
+  [interop]
+  enabled=true
+  appendWindowsPath=true
+  ```
+  
+  <Note>
+  Adaptez les valeurs selon vos ressources système. Redémarrez WSL : `wsl --shutdown`
+  </Note>
+</Step>
+
+<Step title="Configuration réseau">
+  Pour accéder aux services WSL depuis Windows :
+  
+  ```bash
+  # Dans Kali WSL, démarrer un service (exemple : serveur web)
+  sudo python3 -m http.server 8000
+  
+  # Accessible depuis Windows : http://localhost:8000
+  ```
+</Step>
+
+<Step title="Intégration avec Windows Terminal">
+  Installez Windows Terminal depuis Microsoft Store pour une meilleure expérience :
+  
+  - Interface onglets
+  - Profils personnalisés
+  - Support Unicode complet
+  - Thèmes et personnalisation
+</Step>
+</Steps>
+
+## Outils Windows natifs essentiels
+
+<Steps>
+<Step title="Package managers Windows">
+  **Chocolatey :**
+  ```powershell
+  # Installation de Chocolatey (PowerShell Administrateur)
+  Set-ExecutionPolicy Bypass -Scope Process -Force
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  ```
+  
+  **Winget (intégré Windows 11) :**
+  ```powershell
+  # Vérifier la disponibilité
+  winget --version
+  ```
+</Step>
+
+<Step title="Outils de développement Windows">
+  ```powershell
+  # Via Chocolatey
+  choco install -y git python nodejs vscode
+  choco install -y curl wget 7zip
+  
+  # Via Winget
+  winget install Git.Git
+  winget install Python.Python.3.11
+  winget install Microsoft.VisualStudioCode
+  ```
+</Step>
+
+<Step title="Wireshark pour Windows">
+  ```powershell
+  # Installation
+  choco install -y wireshark
+  
+  # Ou téléchargement direct depuis wireshark.org
+  ```
+  
+  <Note>
+  Wireshark Windows peut capturer le trafic de l'interface physique, contrairement à WSL.
+  </Note>
+</Step>
+
+<Step title="Nmap pour Windows">
+  ```powershell
+  choco install -y nmap
+  
+  # Test depuis PowerShell
+  nmap --version
+  ```
+</Step>
+</Steps>
+
+## Configuration de l'environnement Kali WSL
+
+<Steps>
+<Step title="Outils de reconnaissance">
+  ```bash
+  # Dans Kali WSL
+  sudo apt update
+  
+  # Outils de scanning
+  sudo apt install -y nmap masscan gobuster ffuf
+  
+  # Outils d'énumération
+  sudo apt install -y enum4linux smbclient dnsenum
+  
+  # Test de fonctionnement
+  nmap --version
+  gobuster version
+  ```
+</Step>
+
+<Step title="Frameworks d'exploitation">
+  ```bash
+  # Metasploit (déjà installé avec kali-tools-top10)
+  sudo msfdb init
+  msfconsole -q -x "version; exit"
+  
+  # Burp Suite Community
+  sudo apt install -y burpsuite
+  
+  # SQLmap
+  sudo apt install -y sqlmap
+  ```
+</Step>
+
+<Step title="Outils de mots de passe">
+  ```bash
+  # Craquage de hashes
+  sudo apt install -y john hashcat hydra
+  
+  # Test de base
+  john --test
+  hashcat --benchmark
+  ```
+</Step>
+
+<Step title="Outils de développement">
+  ```bash
+  # Python et bibliothèques
+  sudo apt install -y python3-pip python3-venv
+  pip3 install requests beautifulsoup4 paramiko scapy
+  
+  # Node.js et npm
+  sudo apt install -y nodejs npm
+  
+  # Compilation
+  sudo apt install -y build-essential git
+  ```
+</Step>
+</Steps>
+
+## Gestion des fichiers entre Windows et WSL
+
+<Steps>
+<Step title="Accès aux fichiers">
+  **Depuis Windows :**
+  - Fichiers WSL : `\\wsl$\kali-linux\home\username`
+  - Via l'Explorateur de fichiers
+  
+  **Depuis WSL :**
+  ```bash
+  # Accès au disque C: Windows
+  cd /mnt/c/Users/VotreNomUtilisateur
+  
+  # Créer un lien symbolique vers le bureau Windows
+  ln -s /mnt/c/Users/$USER/Desktop ~/Desktop-Windows
+  ```
+</Step>
+
+<Step title="Synchronisation des outils">
+  Créez un dossier partagé pour vos projets :
+  
+  ```bash
+  # Créer un dossier de travail partagé
+  mkdir -p /mnt/c/Security/{wordlists,scripts,results,tools}
+  
+  # Lien symbolique depuis le home Kali
+  ln -s /mnt/c/Security ~/Security-Shared
+  ```
+</Step>
+
+<Step title="Configuration Git partagée">
+  ```bash
+  # Configuration Git dans WSL
+  git config --global user.name "Votre Nom"
+  git config --global user.email "votre@email.com"
+  
+  # Utiliser le même dossier .ssh que Windows (optionnel)
+  ln -s /mnt/c/Users/$USER/.ssh ~/.ssh
+  chmod 600 ~/.ssh/id_rsa
+  ```
+</Step>
+</Steps>
+
+## Docker et conteneurs
+
+<Steps>
+<Step title="Docker Desktop pour Windows">
+  ```powershell
+  # Installation via Chocolatey
+  choco install -y docker-desktop
+  
+  # Ou téléchargement direct depuis docker.com
+  ```
+  
+  <Note>
+  Docker Desktop s'intègre automatiquement avec WSL2 une fois installé.
+  </Note>
+</Step>
+
+<Step title="Configuration Docker dans WSL">
+  ```bash
+  # Vérifier l'accès Docker depuis Kali
+  docker --version
+  docker run hello-world
+  
+  # Images de lab courantes
+  docker pull vulnerables/web-dvwa
+  docker pull webgoat/webgoat-8.0
+  ```
+</Step>
+
+<Step title="Docker Compose">
+  ```bash
+  # Installation dans WSL
+  sudo apt install -y docker-compose
+  
+  # Test
+  docker-compose --version
+  ```
+</Step>
+</Steps>
+
+## Wordlists et dictionnaires
+
+<Steps>
+<Step title="SecLists et wordlists courantes">
+  ```bash
+  cd ~/
+  git clone https://github.com/danielmiessler/SecLists.git
+  
+  # Rockyou wordlist
+  sudo gunzip /usr/share/wordlists/rockyou.txt.gz
+  
+  # Vérifier les wordlists disponibles
+  ls -la /usr/share/wordlists/
+  ```
+</Step>
+
+<Step title="Wordlists personnalisées">
+  ```bash
+  mkdir -p ~/Security/wordlists
+  cd ~/Security/wordlists
+  
+  # Télécharger des wordlists spécialisées
+  wget https://github.com/berzerk0/Probable-Wordlists/raw/master/Real-Passwords/Top12Thousand-probable-v2.txt
+  ```
+</Step>
+</Steps>
+
+## Scripts et automatisation
+
+<Steps>
+<Step title="Scripts PowerShell utiles">
+  Créez `update-kali.ps1` dans PowerShell :
+  
+  ```powershell
+  # update-kali.ps1
+  Write-Host "Démarrage de Kali WSL..." -ForegroundColor Green
+  wsl -d kali-linux -u root apt update
+  wsl -d kali-linux -u root apt full-upgrade -y
+  wsl -d kali-linux -u root apt autoremove -y
+  Write-Host "Mise à jour terminée!" -ForegroundColor Green
+  ```
+</Step>
+
+<Step title="Alias et fonctions Bash">
+  Ajoutez à `~/.bashrc` dans Kali :
+  
+  ```bash
+  # Alias Windows/WSL
+  alias open='explorer.exe'
+  alias clip='clip.exe'
+  
+  # Alias cybersécurité
+  alias nmap-quick='nmap -sC -sV'
+  alias nmap-full='nmap -sC -sV -p-'
+  alias burp='java -jar /usr/share/burpsuite/burpsuite.jar'
+  
+  # Fonctions utiles
+  function portscan() {
+      nmap -sC -sV -p- "$1" -oA "/mnt/c/Security/results/scan_$1_$(date +%Y%m%d_%H%M)"
+  }
+  
+  function windows-path() {
+      echo "$1" | sed 's|/mnt/c|C:|' | sed 's|/|\\|g'
+  }
+  
+  # Navigation rapide
+  alias cdwin='cd /mnt/c/Users/$USER'
+  alias cdsec='cd /mnt/c/Security'
+  ```
+</Step>
+</Steps>
+
+## Configuration réseau avancée
+
+<Steps>
+<Step title="Tunnel et port forwarding">
+  ```bash
+  # Port forwarding depuis WSL vers Windows
+  # Exemple : service sur port 8080 dans WSL accessible sur Windows
+  
+  # Dans WSL
+  python3 -m http.server 8080
+  
+  # Accessible depuis Windows : http://localhost:8080
+  ```
+</Step>
+
+<Step title="VPN et interfaces réseau">
+  ```bash
+  # Installer OpenVPN dans WSL
+  sudo apt install -y openvpn
+  
+  # Note : Les interfaces VPN Windows ne sont pas directement
+  # accessibles depuis WSL. Utilisez les outils Windows pour VPN.
+  ```
+  
+  <Warning>
+  Les tests réseau nécessitant des interfaces spécifiques (WiFi audit) doivent être effectués depuis Windows ou une VM dédiée.
+  </Warning>
+</Step>
+</Steps>
+
+## Machines virtuelles complémentaires
+
+<Steps>
+<Step title="VirtualBox ou VMware">
+  ```powershell
+  # Installation VirtualBox
+  choco install -y virtualbox
+  
+  # Ou VMware Workstation Pro
+  choco install -y vmwareworkstation
+  ```
+  
+  <Note>
+  Pour les tests nécessitant un accès matériel complet (WiFi, USB), une VM traditionnelle reste nécessaire.
+  </Note>
+</Step>
+
+<Step title="Images Kali complètes">
+  Téléchargez les images VM depuis [kali.org](https://www.kali.org/get-kali/) :
+  - Kali Linux VirtualBox
+  - Kali Linux VMware
+  - Images avec outils complets préinstallés
+</Step>
+</Steps>
+
+## Vérification et tests
+
+<Steps>
+<Step title="Test de l'environnement complet">
+  ```bash
+  # Dans Kali WSL
+  echo "=== Test des outils principaux ==="
+  nmap --version
+  msfconsole -q -x "version; exit"
+  burpsuite --version 2>/dev/null || echo "Burp Suite disponible"
+  python3 -c "import scapy; print('Scapy OK')"
+  
+  # Test fonctionnel
+  nmap -sn 127.0.0.1
+  echo "Tests réussis!"
+  ```
+</Step>
+
+<Step title="Test de connectivité réseau">
+  ```bash
+  # Test de résolution DNS
+  nslookup google.com
+  
+  # Test de connectivité
+  ping -c 4 8.8.8.8
+  
+  # Test de ports locaux
+  nmap -sT localhost
+  ```
+</Step>
+
+<Step title="Performance et optimisation">
+  ```powershell
+  # Vérifier l'utilisation des ressources WSL
+  wsl --list --verbose
+  
+  # Statistiques d'utilisation
+  Get-Process vmmem | Select-Object ProcessName, WorkingSet
+  ```
+</Step>
+</Steps>
+
+## Troubleshooting commun
+
+<AccordionGroup>
+<Accordion title="WSL ne démarre pas">
+  ```powershell
+  # Redémarrer WSL
+  wsl --shutdown
+  wsl --unregister kali-linux
+  wsl --install -d kali-linux
+  
+  # Vérifier les fonctionnalités Windows
+  dism.exe /online /get-featureinfo /featurename:Microsoft-Windows-Subsystem-Linux
+  ```
+</Accordion>
+
+<Accordion title="Problèmes de performance">
+  ```ini
+  # Ajuster .wslconfig
+  [wsl2]
+  memory=4GB
+  processors=2
+  swap=1GB
+  
+  # Redémarrer WSL
+  wsl --shutdown
+  ```
+</Accordion>
+
+<Accordion title="Problèmes de réseau">
+  ```powershell
+  # Réinitialiser la stack réseau WSL
+  wsl --shutdown
+  netsh winsock reset
+  netsh int ip reset all
+  netsh winhttp reset proxy
+  ipconfig /flushdns
+  ```
+</Accordion>
+</AccordionGroup>
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Cheat Sheet" icon="list" href="/essentiels/cheatsheet">
+    Commandes essentielles pour utiliser vos nouveaux outils
+  </Card>
+  <Card title="Guide macOS" icon="apple" href="/os/macos">
+    Configuration alternative sur macOS
+  </Card>
+</CardGroup>
+
+<Warning>
+**Rappel légal :** WSL et les outils installés doivent uniquement être utilisés sur vos propres systèmes ou avec une autorisation explicite écrite. L'utilisation non autorisée constitue une violation de la loi et peut entraîner des poursuites judiciaires.
+</Warning>
+
+<Note>
+**Avantages de WSL2 pour la cybersécurité :**
+- Performance quasi-native Linux
+- Intégration parfaite Windows/Linux
+- Pas de overhead de virtualisation complète
+- Accès aux outils Windows et Linux simultanément
+</Note>

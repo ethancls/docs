@@ -1,0 +1,537 @@
+---
+title: 'Linux'
+description: 'Guide complet pour configurer votre environnement de cybersécurité sur Linux avec les distributions recommandées et les outils essentiels'
+icon: "linux"
+---
+
+## Configuration de l'environnement Linux
+
+Linux est l'OS de choix pour la cybersécurité et le pentesting. Ce guide couvre l'installation sur les distributions principales et la configuration des outils essentiels.
+
+<Info>
+Les distributions basées sur Debian (Ubuntu, Kali) sont particulièrement recommandées pour débuter, grâce à leur vaste écosystème d'outils et leur documentation extensive.
+</Info>
+
+## Distributions recommandées
+
+<Tabs>
+<Tab title="Kali Linux (Spécialisée)">
+  **Avantages :**
+  - Plus de 600 outils de pentesting préinstallés
+  - Optimisée pour la cybersécurité
+  - Mises à jour fréquentes des outils
+  
+  **Installation :**
+  ```bash
+  # Télécharger depuis https://www.kali.org/get-kali/
+  # Image ISO live ou installer sur disque dur
+  
+  # Mise à jour complète après installation
+  sudo apt update && sudo apt full-upgrade -y
+  ```
+</Tab>
+
+<Tab title="Ubuntu LTS (Polyvalente)">
+  **Avantages :**
+  - Stable et bien supportée
+  - Grande communauté
+  - Compatible avec la plupart des outils
+  
+  **Installation des outils :**
+  ```bash
+  # Mise à jour du système
+  sudo apt update && sudo apt upgrade -y
+  
+  # Installation des dépôts universe
+  sudo apt install software-properties-common
+  ```
+</Tab>
+
+<Tab title="Parrot Security (Alternative)">
+  **Avantages :**
+  - Interface moderne
+  - Outils de sécurité intégrés
+  - Plus léger que Kali
+  
+  **Post-installation :**
+  ```bash
+  sudo apt update
+  sudo parrot-upgrade
+  ```
+</Tab>
+</Tabs>
+
+## Configuration initiale du système
+
+<Steps>
+<Step title="Mise à jour du système">
+  <Tabs>
+  <Tab title="Debian/Ubuntu/Kali">
+    ```bash
+    sudo apt update && sudo apt upgrade -y
+    sudo apt autoremove -y
+    ```
+  </Tab>
+  
+  <Tab title="CentOS/RHEL/Fedora">
+    ```bash
+    sudo dnf update -y
+    sudo dnf autoremove -y
+    ```
+  </Tab>
+  
+  <Tab title="Arch Linux">
+    ```bash
+    sudo pacman -Syu
+    sudo pacman -Rns $(pacman -Qtdq)
+    ```
+  </Tab>
+  </Tabs>
+</Step>
+
+<Step title="Installation des outils de développement">
+  <Tabs>
+  <Tab title="Debian/Ubuntu">
+    ```bash
+    sudo apt install -y build-essential curl wget git vim
+    sudo apt install -y python3 python3-pip python3-venv
+    sudo apt install -y nodejs npm
+    ```
+  </Tab>
+  
+  <Tab title="CentOS/RHEL/Fedora">
+    ```bash
+    sudo dnf groupinstall -y "Development Tools"
+    sudo dnf install -y curl wget git vim
+    sudo dnf install -y python3 python3-pip
+    sudo dnf install -y nodejs npm
+    ```
+  </Tab>
+  </Tabs>
+</Step>
+
+<Step title="Configuration de Git">
+  ```bash
+  git config --global user.name "Votre Nom"
+  git config --global user.email "votre@email.com"
+  git config --global init.defaultBranch main
+  ```
+</Step>
+</Steps>
+
+## Outils de réseau et reconnaissance
+
+<Steps>
+<Step title="Nmap - Scanner de ports avancé">
+  <Tabs>
+  <Tab title="Debian/Ubuntu">
+    ```bash
+    sudo apt install -y nmap
+    ```
+  </Tab>
+  
+  <Tab title="CentOS/RHEL/Fedora">
+    ```bash
+    sudo dnf install -y nmap
+    ```
+  </Tab>
+  
+  <Tab title="Arch Linux">
+    ```bash
+    sudo pacman -S nmap
+    ```
+  </Tab>
+  </Tabs>
+  
+  **Test de fonctionnement :**
+  ```bash
+  nmap -V
+  nmap -sn 192.168.1.0/24
+  ```
+</Step>
+
+<Step title="Masscan - Scanner haute performance">
+  ```bash
+  # Installation depuis les sources
+  git clone https://github.com/robertdavidgraham/masscan
+  cd masscan
+  make
+  sudo make install
+  ```
+</Step>
+
+<Step title="Gobuster - Découverte de contenu web">
+  <Tabs>
+  <Tab title="Via package manager">
+    ```bash
+    # Debian/Ubuntu
+    sudo apt install -y gobuster
+    
+    # Fedora
+    sudo dnf install -y gobuster
+    ```
+  </Tab>
+  
+  <Tab title="Installation Go (si nécessaire)">
+    ```bash
+    # Installation de Go
+    wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
+    sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+    source ~/.bashrc
+    
+    # Installation de Gobuster
+    go install github.com/OJ/gobuster/v3@latest
+    ```
+  </Tab>
+  </Tabs>
+</Step>
+
+<Step title="FFuf - Web fuzzer moderne">
+  ```bash
+  # Installation via Go
+  go install github.com/ffuf/ffuf@latest
+  
+  # Ou via package manager sur certaines distributions
+  sudo apt install -y ffuf  # Ubuntu 22.04+
+  ```
+</Step>
+</Steps>
+
+## Outils d'analyse et exploitation
+
+<Steps>
+<Step title="Metasploit Framework">
+  <Tabs>
+  <Tab title="Installation rapide (Kali)">
+    ```bash
+    # Déjà installé sur Kali, mise à jour :
+    sudo msfupdate
+    ```
+  </Tab>
+  
+  <Tab title="Installation manuelle">
+    ```bash
+    # Installation des dépendances
+    sudo apt install -y postgresql curl
+    
+    # Script d'installation officiel
+    curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall
+    chmod 755 msfinstall
+    ./msfinstall
+    ```
+  </Tab>
+  </Tabs>
+</Step>
+
+<Step title="Burp Suite Community">
+  ```bash
+  # Téléchargement et installation
+  wget "https://portswigger.net/burp/releases/download?product=community&type=Linux" -O burpsuite_community_linux.sh
+  chmod +x burpsuite_community_linux.sh
+  sudo ./burpsuite_community_linux.sh
+  ```
+</Step>
+
+<Step title="Wireshark - Analyseur de paquets">
+  ```bash
+  sudo apt install -y wireshark
+  
+  # Ajouter l'utilisateur au groupe wireshark
+  sudo usermod -a -G wireshark $USER
+  # Redémarrer la session pour appliquer les changements
+  ```
+</Step>
+
+<Step title="Aircrack-ng - Suite audit WiFi">
+  ```bash
+  sudo apt install -y aircrack-ng
+  
+  # Vérification des interfaces WiFi
+  sudo airmon-ng
+  ```
+  
+  <Warning>
+  L'utilisation d'aircrack-ng pour tester des réseaux WiFi nécessite une autorisation explicite du propriétaire.
+  </Warning>
+</Step>
+</Steps>
+
+## Outils de mots de passe et cryptographie
+
+<Steps>
+<Step title="John the Ripper - Craquage de hashes">
+  ```bash
+  # Version de base
+  sudo apt install -y john
+  
+  # Version Jumbo (plus d'algorithmes)
+  git clone https://github.com/openwall/john.git
+  cd john/src
+  ./configure && make
+  sudo make install
+  ```
+</Step>
+
+<Step title="Hashcat - Craquage GPU">
+  ```bash
+  sudo apt install -y hashcat
+  
+  # Test avec les exemples
+  hashcat --benchmark
+  ```
+</Step>
+
+<Step title="Hydra - Brute force réseau">
+  ```bash
+  sudo apt install -y hydra
+  
+  # Test de fonctionnement
+  hydra -h
+  ```
+</Step>
+</Steps>
+
+## Environnement de développement
+
+<Steps>
+<Step title="Python et bibliothèques essentielles">
+  ```bash
+  # Installation de pip et virtualenv
+  sudo apt install -y python3-pip python3-venv
+  
+  # Création d'un environnement virtuel
+  python3 -m venv ~/venv/security
+  source ~/venv/security/bin/activate
+  
+  # Installation des bibliothèques courantes
+  pip install requests beautifulsoup4 paramiko scapy pycryptodome
+  pip install sqlparse dnspython python-nmap
+  ```
+</Step>
+
+<Step title="Docker et conteneurs">
+  ```bash
+  # Installation de Docker
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
+  
+  # Ajouter l'utilisateur au groupe docker
+  sudo usermod -aG docker $USER
+  
+  # Installation de Docker Compose
+  sudo apt install -y docker-compose-plugin
+  ```
+</Step>
+
+<Step title="Outils de terminal avancés">
+  ```bash
+  # Tmux pour multiplexage
+  sudo apt install -y tmux
+  
+  # Zsh et Oh My Zsh
+  sudo apt install -y zsh
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  
+  # Outils pratiques
+  sudo apt install -y tree htop ncdu bat fd-find ripgrep
+  ```
+</Step>
+</Steps>
+
+## Wordlists et dictionnaires
+
+<Steps>
+<Step title="Création du dossier de travail">
+  ```bash
+  mkdir -p ~/Security/{tools,wordlists,scripts,results,lab}
+  cd ~/Security/wordlists
+  ```
+</Step>
+
+<Step title="SecLists - Collection complète">
+  ```bash
+  git clone https://github.com/danielmiessler/SecLists.git
+  sudo ln -s ~/Security/wordlists/SecLists /usr/share/seclists
+  ```
+</Step>
+
+<Step title="Rockyou et autres wordlists">
+  ```bash
+  # Rockyou (si pas déjà présent)
+  sudo gunzip /usr/share/wordlists/rockyou.txt.gz 2>/dev/null || \
+  wget https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt
+  
+  # Autres wordlists utiles
+  git clone https://github.com/berzerk0/Probable-Wordlists.git
+  ```
+</Step>
+</Steps>
+
+## Configuration des services
+
+<Steps>
+<Step title="Base de données PostgreSQL (pour Metasploit)">
+  ```bash
+  sudo apt install -y postgresql postgresql-contrib
+  sudo systemctl start postgresql
+  sudo systemctl enable postgresql
+  
+  # Configuration pour Metasploit
+  sudo -u postgres createuser -s $USER
+  sudo -u postgres createdb $USER
+  msfdb init
+  ```
+</Step>
+
+<Step title="Configuration SSH sécurisée">
+  ```bash
+  sudo apt install -y openssh-server
+  
+  # Configuration de base (optionnel)
+  sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+  sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+  sudo systemctl restart ssh
+  ```
+</Step>
+</Steps>
+
+## Alias et fonctions utiles
+
+<Steps>
+<Step title="Configuration du shell">
+  Ajoutez ces alias à votre `~/.bashrc` ou `~/.zshrc` :
+  
+  ```bash
+  # Alias généraux
+  alias ll='ls -la'
+  alias la='ls -A'
+  alias l='ls -CF'
+  alias grep='grep --color=auto'
+  
+  # Alias cybersécurité
+  alias nmap-quick='nmap -sC -sV'
+  alias nmap-full='nmap -sC -sV -p-'
+  alias nmap-udp='sudo nmap -sU'
+  alias nmap-vuln='nmap --script vuln'
+  
+  # Fonctions utiles
+  function portscan() { 
+      nmap -sC -sV -p- "$1" -oA "scan_$1_$(date +%Y%m%d_%H%M)" 
+  }
+  
+  function dirsearch() { 
+      gobuster dir -u "$1" -w ~/Security/wordlists/SecLists/Discovery/Web-Content/common.txt 
+  }
+  
+  function subdomains() {
+      gobuster dns -d "$1" -w ~/Security/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt
+  }
+  
+  # Activation de l'environnement Python
+  alias venv-security='source ~/venv/security/bin/activate'
+  ```
+</Step>
+
+<Step title="Scripts d'automatisation">
+  Créez un script de mise à jour automatique :
+  
+  ```bash
+  cat > ~/Security/scripts/update-tools.sh << 'EOF'
+  #!/bin/bash
+  
+  echo "Mise à jour du système..."
+  sudo apt update && sudo apt upgrade -y
+  
+  echo "Mise à jour des dépôts Git..."
+  cd ~/Security/wordlists/SecLists && git pull
+  
+  echo "Mise à jour de Metasploit..."
+  sudo msfupdate
+  
+  echo "Nettoyage..."
+  sudo apt autoremove -y
+  sudo apt autoclean
+  
+  echo "Mise à jour terminée!"
+  EOF
+  
+  chmod +x ~/Security/scripts/update-tools.sh
+  ```
+</Step>
+</Steps>
+
+## Vérification de l'installation
+
+<Steps>
+<Step title="Test des outils principaux">
+  ```bash
+  # Test de base
+  nmap --version
+  msfconsole -q -x "version; exit"
+  python3 -c "import scapy; print('Scapy OK')"
+  gobuster version
+  
+  # Test fonctionnel léger
+  nmap -sn 127.0.0.1
+  echo "Test OK"
+  ```
+  
+  <Check>
+  Tous les outils devraient répondre sans erreur avec leur version.
+  </Check>
+</Step>
+
+<Step title="Configuration d'un lab local">
+  ```bash
+  # Installation de machines virtuelles vulnérables
+  docker pull vulnerables/web-dvwa
+  docker pull citizenstig/dvwa
+  docker pull webgoat/webgoat-8.0
+  
+  # Création d'un réseau isolé pour les tests
+  docker network create lab-network
+  ```
+</Step>
+</Steps>
+
+## Ressources et laboratoires
+
+<AccordionGroup>
+<Accordion title="Machines virtuelles d'entraînement">
+  **Vulnhub :** [vulnhub.com](https://www.vulnhub.com/)
+  - DVWA (Damn Vulnerable Web Application)
+  - Metasploitable 2/3
+  - VulnOS, LAMP Security
+  
+  **TryHackMe :** [tryhackme.com](https://tryhackme.com/)
+  - Parcours guidés pour débutants
+  - Machines thématiques
+  
+  **HackTheBox :** [hackthebox.eu](https://www.hackthebox.eu/)
+  - Machines plus avancées
+  - Challenges spécialisés
+</Accordion>
+
+<Accordion title="Documentation et références">
+  - **OWASP Testing Guide**
+  - **NIST Cybersecurity Framework**
+  - **PTES (Penetration Testing Execution Standard)**
+  - **Man pages** : `man nmap`, `man hydra`, etc.
+</Accordion>
+</AccordionGroup>
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Windows WSL" icon="windows" href="/os/windows">
+    Configuration d'un environnement Linux sous Windows avec WSL
+  </Card>
+  <Card title="Cheat Sheet" icon="list" href="/essentiels/cheatsheet">
+    Commandes essentielles pour utiliser efficacement vos outils
+  </Card>
+</CardGroup>
+
+<Warning>
+**Important :** Créez toujours un environnement de test isolé (VMs, conteneurs) pour vos expérimentations. N'utilisez jamais ces outils sur des systèmes qui ne vous appartiennent pas sans autorisation explicite écrite.
+</Warning>
