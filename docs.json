@@ -2,12 +2,36 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "FS0CIETY",
+  "description": "FS0CIETY est une plateforme communautaire pour partager des connaissances et des ressources sur la cybersécurité, le hacking et la technologie. Elle offre un espace aux passionnés pour apprendre, collaborer et développer leurs compétences dans un environnement bienveillant.",
   "colors": {
-    "primary": "#ff5e00",
-    "light": "#ffae00",
-    "dark": "#f74e05"
+    "primary": "#dc2626",
+    "light": "#ef4444",
+    "dark": "#1f2937"
   },
   "favicon": "/favicon.svg",
+  "background": {
+    "decoration": "grid"
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "appearance": {
+    "default": "system",
+    "strict": false
+  },
+  "banner": {
+    "content": "Bienvenue sur FS0CIETY !",
+    "dismissible": true
+  },
+  "contextual": {"options": ["copy", "view", "chatgpt", "claude"]},
+  "search": {
+    "prompt": "Recherche"
+  },
+
+  "seo": {
+    "indexing": "all",
+    "metatags": {"title": "FS0CIETY - Documentation", "description": "FS0CIETY est une plateforme communautaire pour partager des connaissances et des ressources sur la cybersécurité, le hacking et la technologie."}
+  },
   "navigation": {
     "tabs": [
       {
@@ -38,7 +62,7 @@
         "tab": "Documentation API",
         "groups": [
           {
-          "group": "Documentation API",
+            "group": "Documentation API",
             "pages": [
               "api-reference/introduction"
             ]
@@ -56,8 +80,7 @@
       }
     ],
     "global": {
-      "anchors": [
-      ]
+      "anchors": []
     }
   },
   "logo": {
@@ -69,10 +92,23 @@
       "type": "button",
       "label": "Contact",
       "href": "mailto:contact@fs0ciety.uk"
-    }
+    },
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/ethancls"
+      }
+    ]
   },
   "footer": {
     "socials": {
+      "website": "https://fs0ciety.uk",
+      "github": "https://github.com/ethancls"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": true
     }
   }
 }
