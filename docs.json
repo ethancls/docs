@@ -17,7 +17,7 @@
   },
   "banner": {
     "content": "🚧 Site toujours en développement ! [N'hésitez pas à nous contacter pour toute question ou suggestion](mailto:contact@fs0ciety.uk)",
-    "dismissible": false
+    "dismissible": true
   },
   "contextual": { "options": ["view", "chatgpt", "claude"] },
   "search": {
