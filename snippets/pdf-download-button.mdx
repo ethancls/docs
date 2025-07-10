@@ -1,0 +1,536 @@
+---
+title: "Bouton de Téléchargement PDF"
+description: "Composant React pour télécharger des fichiers PDF avec style moderne"
+icon: "download"
+---
+
+## Composant de Base
+
+<CodeGroup>
+```jsx PDFDownloadButton.jsx
+import React from 'react';
+import { Download, FileText, Loader2 } from 'lucide-react';
+
+const PDFDownloadButton = ({ 
+  pdfUrl, 
+  fileName = "document.pdf",
+  variant = "primary",
+  size = "medium",
+  isLoading = false,
+  disabled = false,
+  className = "",
+  children 
+}) => {
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+      
+      // Créer un lien de téléchargement temporaire
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      
+      // Déclencher le téléchargement
+      document.body.appendChild(link);
+      link.click();
+      
+      // Nettoyer
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement:', error);
+      alert('Erreur lors du téléchargement du fichier');
+    }
+  };
+
+  const getVariantClasses = () => {
+    switch (variant) {
+      case 'primary':
+        return 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600';
+      case 'secondary':
+        return 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600';
+      case 'outline':
+        return 'bg-transparent hover:bg-blue-50 text-blue-600 border-blue-600';
+      case 'ghost':
+        return 'bg-transparent hover:bg-gray-100 text-gray-700 border-transparent';
+      default:
+        return 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600';
+    }
+  };
+
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'small':
+        return 'px-3 py-1.5 text-sm';
+      case 'medium':
+        return 'px-4 py-2 text-base';
+      case 'large':
+        return 'px-6 py-3 text-lg';
+      default:
+        return 'px-4 py-2 text-base';
+    }
+  };
+
+  const baseClasses = `
+    inline-flex items-center gap-2 
+    font-medium rounded-lg border
+    transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    disabled:opacity-50 disabled:cursor-not-allowed
+    ${getVariantClasses()}
+    ${getSizeClasses()}
+    ${className}
+  `;
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={disabled || isLoading}
+      className={baseClasses}
+      type="button"
+    >
+      {isLoading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Download className="w-4 h-4" />
+      )}
+      {children || "Télécharger PDF"}
+    </button>
+  );
+};
+
+export default PDFDownloadButton;
+```
+
+```tsx PDFDownloadButton.tsx
+import React from 'react';
+import { Download, FileText, Loader2 } from 'lucide-react';
+
+interface PDFDownloadButtonProps {
+  pdfUrl: string;
+  fileName?: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
+  isLoading?: boolean;
+  disabled?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  onDownloadStart?: () => void;
+  onDownloadComplete?: () => void;
+  onDownloadError?: (error: Error) => void;
+}
+
+const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ 
+  pdfUrl, 
+  fileName = "document.pdf",
+  variant = "primary",
+  size = "medium",
+  isLoading = false,
+  disabled = false,
+  className = "",
+  children,
+  onDownloadStart,
+  onDownloadComplete,
+  onDownloadError
+}) => {
+  const handleDownload = async (): Promise<void> => {
+    try {
+      onDownloadStart?.();
+      
+      const response = await fetch(pdfUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      
+      // Vérifier que c'est bien un PDF
+      if (blob.type !== 'application/pdf') {
+        console.warn('Le fichier téléchargé n\'est pas un PDF');
+      }
+      
+      // Créer un lien de téléchargement temporaire
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      
+      // Déclencher le téléchargement
+      document.body.appendChild(link);
+      link.click();
+      
+      // Nettoyer
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      onDownloadComplete?.();
+    } catch (error) {
+      const errorObj = error instanceof Error ? error : new Error('Erreur inconnue');
+      console.error('Erreur lors du téléchargement:', errorObj);
+      onDownloadError?.(errorObj);
+    }
+  };
+
+  const getVariantClasses = (): string => {
+    switch (variant) {
+      case 'primary':
+        return 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600';
+      case 'secondary':
+        return 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600';
+      case 'outline':
+        return 'bg-transparent hover:bg-blue-50 text-blue-600 border-blue-600';
+      case 'ghost':
+        return 'bg-transparent hover:bg-gray-100 text-gray-700 border-transparent';
+      default:
+        return 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600';
+    }
+  };
+
+  const getSizeClasses = (): string => {
+    switch (size) {
+      case 'small':
+        return 'px-3 py-1.5 text-sm';
+      case 'medium':
+        return 'px-4 py-2 text-base';
+      case 'large':
+        return 'px-6 py-3 text-lg';
+      default:
+        return 'px-4 py-2 text-base';
+    }
+  };
+
+  const baseClasses = `
+    inline-flex items-center gap-2 
+    font-medium rounded-lg border
+    transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    disabled:opacity-50 disabled:cursor-not-allowed
+    ${getVariantClasses()}
+    ${getSizeClasses()}
+    ${className}
+  `.trim().replace(/\s+/g, ' ');
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={disabled || isLoading}
+      className={baseClasses}
+      type="button"
+      aria-label={`Télécharger ${fileName}`}
+    >
+      {isLoading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Download className="w-4 h-4" />
+      )}
+      {children || "Télécharger PDF"}
+    </button>
+  );
+};
+
+export default PDFDownloadButton;
+```
+</CodeGroup>
+
+## Exemples d'Utilisation
+
+### Utilisation Basique
+
+```jsx
+<PDFDownloadButton 
+  pdfUrl="/docs/guide-installation.pdf"
+  fileName="guide-installation-fs0ciety.pdf"
+>
+  Télécharger le Guide
+</PDFDownloadButton>
+```
+
+### Avec Gestion d'État
+
+```jsx
+import { useState } from 'react';
+
+function DocumentSection() {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  return (
+    <PDFDownloadButton 
+      pdfUrl="/docs/cheatsheet.pdf"
+      fileName="fs0ciety-cheatsheet.pdf"
+      variant="primary"
+      size="large"
+      isLoading={isDownloading}
+      onDownloadStart={() => setIsDownloading(true)}
+      onDownloadComplete={() => {
+        setIsDownloading(false);
+        console.log('Téléchargement terminé !');
+      }}
+      onDownloadError={(error) => {
+        setIsDownloading(false);
+        alert(`Erreur: ${error.message}`);
+      }}
+    >
+      {isDownloading ? 'Téléchargement...' : 'Télécharger Cheat Sheet'}
+    </PDFDownloadButton>
+  );
+}
+```
+
+### Différentes Variantes
+
+<CardGroup cols={2}>
+<Card title="Bouton Principal" icon="download">
+```jsx
+<PDFDownloadButton 
+  pdfUrl="/docs/manual.pdf"
+  variant="primary"
+  size="medium"
+>
+  Télécharger Manuel
+</PDFDownloadButton>
+```
+</Card>
+
+<Card title="Bouton Secondaire" icon="file-text">
+```jsx
+<PDFDownloadButton 
+  pdfUrl="/docs/appendix.pdf"
+  variant="secondary"
+  size="small"
+>
+  Annexes PDF
+</PDFDownloadButton>
+```
+</Card>
+</CardGroup>
+
+### Bouton avec Icône Personnalisée
+
+```jsx
+<PDFDownloadButton 
+  pdfUrl="/docs/report.pdf"
+  variant="outline"
+  className="border-red-500 text-red-600 hover:bg-red-50"
+>
+  <FileText className="w-4 h-4" />
+  Rapport PDF
+</PDFDownloadButton>
+```
+
+## Composant Avancé avec Prévisualisation
+
+```jsx AdvancedPDFButton.jsx
+import React, { useState } from 'react';
+import { Download, Eye, FileText, X } from 'lucide-react';
+
+const AdvancedPDFButton = ({ 
+  pdfUrl, 
+  fileName = "document.pdf",
+  showPreview = false,
+  previewHeight = "600px"
+}) => {
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDownload = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      
+      document.body.appendChild(link);
+      link.click();
+      
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex gap-2">
+        <button
+          onClick={handleDownload}
+          disabled={isLoading}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg border border-blue-600 transition-all duration-200"
+        >
+          <Download className="w-4 h-4" />
+          {isLoading ? 'Téléchargement...' : 'Télécharger'}
+        </button>
+
+        {showPreview && (
+          <button
+            onClick={() => setIsPreviewOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg border border-gray-300 transition-all duration-200"
+          >
+            <Eye className="w-4 h-4" />
+            Prévisualiser
+          </button>
+        )}
+      </div>
+
+      {/* Modal de prévisualisation */}
+      {isPreviewOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-full overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Prévisualisation - {fileName}
+              </h3>
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <iframe
+                src={pdfUrl}
+                width="100%"
+                height={previewHeight}
+                className="border rounded"
+                title={`Prévisualisation de ${fileName}`}
+              />
+            </div>
+            <div className="flex justify-end gap-2 p-4 border-t bg-gray-50">
+              <button
+                onClick={() => setIsPreviewOpen(false)}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Fermer
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Télécharger
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+```
+
+## Intégration avec Next.js
+
+```jsx pages/api/download-pdf.js
+// API Route pour servir des PDFs protégés
+export default function handler(req, res) {
+  const { file } = req.query;
+  
+  // Validation du fichier
+  const allowedFiles = ['cheatsheet.pdf', 'guide.pdf', 'manual.pdf'];
+  if (!allowedFiles.includes(file)) {
+    return res.status(404).json({ error: 'Fichier non trouvé' });
+  }
+
+  // Authentification (optionnel)
+  const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(401).json({ error: 'Non autorisé' });
+  }
+
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const filePath = path.join(process.cwd(), 'public', 'docs', file);
+    
+    const fileBuffer = fs.readFileSync(filePath);
+    
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${file}"`);
+    res.send(fileBuffer);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+}
+```
+
+## Installation des Dépendances
+
+<CodeGroup>
+```bash npm
+npm install lucide-react
+```
+
+```bash yarn
+yarn add lucide-react
+```
+
+```bash pnpm
+pnpm add lucide-react
+```
+</CodeGroup>
+
+## Props du Composant
+
+<ParamField path="pdfUrl" type="string" required>
+URL du fichier PDF à télécharger. Peut être une URL relative ou absolue.
+</ParamField>
+
+<ParamField path="fileName" type="string" default="document.pdf">
+Nom du fichier qui sera téléchargé. Doit inclure l'extension `.pdf`.
+</ParamField>
+
+<ParamField path="variant" type="string" default="primary">
+Style du bouton. Options: `primary`, `secondary`, `outline`, `ghost`.
+</ParamField>
+
+<ParamField path="size" type="string" default="medium">
+Taille du bouton. Options: `small`, `medium`, `large`.
+</ParamField>
+
+<ParamField path="isLoading" type="boolean" default="false">
+Affiche un indicateur de chargement et désactive le bouton.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+Désactive le bouton.
+</ParamField>
+
+<ParamField path="className" type="string" default="">
+Classes CSS supplémentaires à appliquer au bouton.
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+Contenu du bouton. Par défaut affiche "Télécharger PDF".
+</ParamField>
+
+## Callbacks (TypeScript uniquement)
+
+<ParamField path="onDownloadStart" type="() => void">
+Fonction appelée au début du téléchargement.
+</ParamField>
+
+<ParamField path="onDownloadComplete" type="() => void">
+Fonction appelée à la fin du téléchargement réussi.
+</ParamField>
+
+<ParamField path="onDownloadError" type="(error: Error) => void">
+Fonction appelée en cas d'erreur pendant le téléchargement.
+</ParamField>
+
+<Tip>
+Ce composant utilise l'API `fetch` moderne et gère automatiquement la création d'un lien de téléchargement temporaire. Il est compatible avec tous les navigateurs modernes.
+</Tip>
+
+<Warning>
+Assurez-vous que votre serveur configure correctement les en-têtes CORS si les PDFs sont hébergés sur un domaine différent.
+</Warning>

