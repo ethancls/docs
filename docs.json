@@ -4,8 +4,8 @@
   "name": "FS0CIETY",
   "description": "FS0CIETY est une plateforme communautaire pour partager des connaissances et des ressources sur la cybersécurité, le hacking et la technologie. Elle offre un espace aux passionnés pour apprendre, collaborer et développer leurs compétences dans un environnement bienveillant.",
   "colors": {
-    "primary": "#dc2626",
-    "light": "#ef4444",
+    "primary": "#9fef00",
+    "light": "#00d4aa",
     "dark": "#000000"
   },
   "favicon": "/favicon.ico",
