@@ -8,7 +8,7 @@
     "light": "#00d4aa",
     "dark": "#000000"
   },
-  "favicon": "/favicon.ico",
+  "favicon": "/favicon.svg",
   "background": {
     "decoration": "gradient"
   },
